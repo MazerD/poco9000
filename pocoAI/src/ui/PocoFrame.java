@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.util.Iterator;
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import simulation.Action;
@@ -32,6 +33,7 @@ public class PocoFrame extends JFrame implements ActionListener {
 
 	private Board state;
 	private Iterator<Action> actions;
+	private JPanel panel;
 
 	/**
 	 * This calls actionPerformed at regular intervals, which causes animation
@@ -43,60 +45,17 @@ public class PocoFrame extends JFrame implements ActionListener {
 		state = startState;
 		actions = agentActions;
 
-		this.setPreferredSize(new Dimension(SQUARE_WIDTH * state.getWidth(),
-				SQUARE_WIDTH * state.getHeight()));
-		// this.setResizable(false);
+		this.setSize(new Dimension(SQUARE_WIDTH * state.getWidth() + 8,
+				SQUARE_WIDTH * state.getHeight() + 28));
+		this.setResizable(false);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		System.out.println("Board size: (" + state.getWidth() + ", "
-				+ state.getHeight() + ")\n");
-
+		panel = new MainPanel();
+		add(panel);
 		repaint();
 
 		timer = new Timer(STEP_TIME_MILLIS, this);
 		timer.start();
-	}
-
-	@Override
-	public void paint(Graphics g) {
-		g.setColor(Color.BLACK);
-		g.fillRect(0, 0, getWidth(), getHeight());
-
-		for (int x = 0; x < state.getWidth(); x++) {
-			for (int y = 0; y < state.getHeight(); y++) {
-
-				switch (state.getSquareType(x, y)) {
-				case WALL:
-					return;
-				case GOAL:
-					g.setColor(new Color(200, 255, 200));
-					break;
-				case EMPTY:
-					g.setColor(Color.WHITE);
-					break;
-				}
-
-				int xScreen = x * SQUARE_WIDTH + MARGIN;
-				int yScreen = y * SQUARE_WIDTH + MARGIN;
-				g.fillRect(xScreen, yScreen, INTERIOR_WIDTH, INTERIOR_WIDTH);
-
-				switch (state.getSquareContents(x, y)) {
-				case AGENT:
-					g.setColor(Color.ORANGE);
-					g.fillOval(xScreen + MARGIN, yScreen + MARGIN,
-							OBJECT_WIDTH, OBJECT_WIDTH);
-					System.out.println("Agent at (" + x + "," + y + ")");
-					break;
-				case BOX:
-					g.setColor(Color.GREEN);
-					g.fillRoundRect(xScreen + MARGIN, yScreen + MARGIN,
-							OBJECT_WIDTH, OBJECT_WIDTH, ARC_WIDTH, ARC_WIDTH);
-					break;
-				default:
-					break;
-				}
-			}
-		}
 	}
 
 	@Override
@@ -108,6 +67,50 @@ public class PocoFrame extends JFrame implements ActionListener {
 
 		state.moveAgent(actions.next());
 		repaint();
+	}
+	
+	private class MainPanel extends JPanel {
+		
+		@Override
+		public void paint(Graphics g) {
+			g.setColor(Color.BLACK);
+			g.fillRect(0, 0, getWidth(), getHeight());
+
+			for (int x = 0; x < state.getWidth(); x++) {
+				for (int y = 0; y < state.getHeight(); y++) {
+
+					switch (state.getSquareType(x, y)) {
+					case WALL:
+						return;
+					case GOAL:
+						g.setColor(new Color(200, 255, 200));
+						break;
+					case EMPTY:
+						g.setColor(Color.WHITE);
+						break;
+					}
+
+					int xScreen = x * SQUARE_WIDTH + MARGIN;
+					int yScreen = y * SQUARE_WIDTH + MARGIN;
+					g.fillRect(xScreen, yScreen, INTERIOR_WIDTH, INTERIOR_WIDTH);
+
+					switch (state.getSquareContents(x, y)) {
+					case AGENT:
+						g.setColor(Color.ORANGE);
+						g.fillOval(xScreen + MARGIN, yScreen + MARGIN,
+								OBJECT_WIDTH, OBJECT_WIDTH);
+						break;
+					case BOX:
+						g.setColor(Color.GREEN);
+						g.fillRoundRect(xScreen + MARGIN, yScreen + MARGIN,
+								OBJECT_WIDTH, OBJECT_WIDTH, ARC_WIDTH, ARC_WIDTH);
+						break;
+					default:
+						break;
+					}
+				}
+			}
+		}
 	}
 
 }
