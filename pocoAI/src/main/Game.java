@@ -7,13 +7,14 @@ import javax.swing.JFrame;
 
 import simulation.Action;
 import simulation.Board;
+import simulation.BoardType;
 import ui.PocoFrame;
 
 public class Game {
 
 	public static void main(String[] args) {
 		// Create board
-		Board b = new Board();
+		Board b = new Board(BoardType.EASY);
 		
 		// Create agent
 		
