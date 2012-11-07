@@ -28,7 +28,6 @@ public class PocoFrame extends JFrame implements ActionListener {
 	private static final int MARGIN = 2;
 	private static final int INTERIOR_WIDTH = SQUARE_WIDTH - (2 * MARGIN);
 	private static final int OBJECT_WIDTH = INTERIOR_WIDTH - (2 * MARGIN);
-	private static final int ARC_WIDTH = OBJECT_WIDTH / 4;
 	private static final int STEP_TIME_MILLIS = 1000;
 
 	private Board state;
@@ -68,9 +67,9 @@ public class PocoFrame extends JFrame implements ActionListener {
 		state.moveAgent(actions.next());
 		repaint();
 	}
-	
+
 	private class MainPanel extends JPanel {
-		
+
 		@Override
 		public void paint(Graphics g) {
 			g.setColor(Color.BLACK);
@@ -78,35 +77,37 @@ public class PocoFrame extends JFrame implements ActionListener {
 
 			for (int x = 0; x < state.getWidth(); x++) {
 				for (int y = 0; y < state.getHeight(); y++) {
+					inner: {
+						switch (state.getSquareType(x, y)) {
+						case WALL:
+							break inner;
+						case GOAL:
+							g.setColor(new Color(200, 255, 200));
+							break;
+						case EMPTY:
+							g.setColor(Color.WHITE);
+							break;
+						}
 
-					switch (state.getSquareType(x, y)) {
-					case WALL:
-						return;
-					case GOAL:
-						g.setColor(new Color(200, 255, 200));
-						break;
-					case EMPTY:
-						g.setColor(Color.WHITE);
-						break;
-					}
+						int xScreen = x * SQUARE_WIDTH + MARGIN;
+						int yScreen = y * SQUARE_WIDTH + MARGIN;
+						g.fillRect(xScreen, yScreen, INTERIOR_WIDTH,
+								INTERIOR_WIDTH);
 
-					int xScreen = x * SQUARE_WIDTH + MARGIN;
-					int yScreen = y * SQUARE_WIDTH + MARGIN;
-					g.fillRect(xScreen, yScreen, INTERIOR_WIDTH, INTERIOR_WIDTH);
-
-					switch (state.getSquareContents(x, y)) {
-					case AGENT:
-						g.setColor(Color.ORANGE);
-						g.fillOval(xScreen + MARGIN, yScreen + MARGIN,
-								OBJECT_WIDTH, OBJECT_WIDTH);
-						break;
-					case BOX:
-						g.setColor(Color.GREEN);
-						g.fillRoundRect(xScreen + MARGIN, yScreen + MARGIN,
-								OBJECT_WIDTH, OBJECT_WIDTH, ARC_WIDTH, ARC_WIDTH);
-						break;
-					default:
-						break;
+						switch (state.getSquareContents(x, y)) {
+						case AGENT:
+							g.setColor(Color.ORANGE);
+							g.fillOval(xScreen + MARGIN, yScreen + MARGIN,
+									OBJECT_WIDTH, OBJECT_WIDTH);
+							break;
+						case BOX:
+							g.setColor(Color.CYAN);
+							g.fillOval(xScreen + MARGIN, yScreen + MARGIN,
+									OBJECT_WIDTH, OBJECT_WIDTH);
+							break;
+						default:
+							break;
+						}
 					}
 				}
 			}

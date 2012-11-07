@@ -58,8 +58,19 @@ public class Board {
 	}
 	
 	/**
-	 * Moves the agent one square in the indicated direction
-	 * @param agentAction The direction in which to move
+	 * Moves the agent one square in the indicated direction.
+	 * <ul>
+	 * <li>If the square the agent wishes to move to is empty, it simply moves
+	 * the agent to that square.</li>
+	 * <li>If the square contains a box, and the square on the other side of the
+	 * box is empty (ie, the agent can push the box), then it moves the agent,
+	 * and moves the box to the next square.</li>
+	 * <li>If the square contains a wall or a box that cannot be pushed, it does
+	 * nothing.</li>
+	 * </ul>
+	 * 
+	 * @param agentAction
+	 *            The direction in which to move
 	 */
 	// Should this do any error checking?
 	public void moveAgent(Action agentAction) {
@@ -85,6 +96,8 @@ public class Board {
 	 * @return
 	 */
 	public SquareContents getSquareContents(int x, int y) {
+		if (x == xPos && y == yPos)
+			return SquareContents.AGENT;
 		return board[y][x].getContents();
 	}
 
