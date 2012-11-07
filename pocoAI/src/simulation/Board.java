@@ -40,11 +40,12 @@ public class Board {
 						 board[h][w] = new Square(SquareType.EMPTY, SquareContents.EMPTY);
 					 }
 					 
-					 // Start position
-					 xPos = 3;
-					 yPos = 3;
 				 }
 			}
+			// Start position
+			xPos = 3;
+			yPos = 3;
+			
 		case MEDIUM:
 			return;
 		case HARD:
@@ -112,5 +113,18 @@ public class Board {
 	 */
 	public int getHeight() {
 		return board.length;
+	}
+	
+	/**
+	 * @return the deep clone of the board
+	 */
+	public Square[][] getDeepClone() {
+		Square[][] clone = new Square[getWidth()][getHeight()];
+		for (int h = 0; h < getHeight(); h++) {
+			 for (int w = 0; w < getWidth(); w++) {
+				 clone[h][w] = new Square(board[h][w].getType(), board[h][w].getContents());
+			 }
+		}
+		return clone;
 	}
 }
