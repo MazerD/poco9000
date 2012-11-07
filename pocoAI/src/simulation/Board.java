@@ -45,6 +45,7 @@ public class Board {
 			// Start position
 			xPos = 3;
 			yPos = 3;
+			board[yPos][xPos].setContents(SquareContents.AGENT);
 			
 		case MEDIUM:
 			return;
@@ -78,12 +79,16 @@ public class Board {
 		switch (agentAction) {
 		case LEFT:
 			xPos--;
+			break;
 		case RIGHT:
 			xPos++;
+			break;
 		case UP:
 			yPos--;
+			break;
 		case DOWN:
 			yPos++;
+			break;
 		}
 		board[yPos][xPos].setContents(SquareContents.AGENT);
 	}
@@ -96,8 +101,6 @@ public class Board {
 	 * @return
 	 */
 	public SquareContents getSquareContents(int x, int y) {
-		if (x == xPos && y == yPos)
-			return SquareContents.AGENT;
 		return board[y][x].getContents();
 	}
 

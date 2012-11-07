@@ -65,6 +65,7 @@ public class PocoFrame extends JFrame implements ActionListener {
 		}
 
 		state.moveAgent(actions.next());
+		System.out.println("Agent moved");
 		repaint();
 	}
 
