@@ -21,7 +21,7 @@ public class DepthFirstAgent implements Agent {
 
 	@Override
 	public String algorithmName() {
-		return "Breadth First Graph Search";
+		return "Depth First Graph Search";
 	}
 	
 	private boolean solve(Board state) {
