@@ -6,13 +6,13 @@ import java.util.LinkedList;
 import simulation.Action;
 import simulation.Board;
 
-public class DepthFirstAgent implements Agent {
+public class DepthFirstAgent extends AbstractAgent {
 
 	private Solution s;
 	private Collection<Board> visited = new LinkedList<Board>();
 	
 	@Override
-	public Solution findSolution(Board startState) {
+	public Solution doFindSolution(Board startState) {
 		s = new Solution();
 		visited.clear();
 		solve(startState);		

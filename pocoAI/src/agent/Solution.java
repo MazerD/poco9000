@@ -57,4 +57,8 @@ public class Solution {
 	public void addStatistic(String name, Object value) {
 		statistics.put(name, value);
 	}
+	
+	public int length() {
+		return actions.size();
+	}
 }

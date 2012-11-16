@@ -38,7 +38,7 @@ public class PocoFrame extends JFrame implements ActionListener {
 	private static final int MARGIN = 1;
 	private static final int INTERIOR_WIDTH = SQUARE_WIDTH - (2 * MARGIN);
 	private static final int OBJECT_WIDTH = INTERIOR_WIDTH - (2 * MARGIN);
-	private static final int STEP_TIME_MILLIS = 500;
+	private static final int STEP_TIME_MILLIS = 300;
 
 	private Board startState;
 	private SolutionSet solutions;
@@ -63,7 +63,8 @@ public class PocoFrame extends JFrame implements ActionListener {
 
 		animationPanel = new MainPanel();
 		statsPanel = new StatisticsPanel();
-		add(new ControlPanel(), BorderLayout.NORTH);
+		ControlPanel cp = new ControlPanel();
+		add(cp, BorderLayout.NORTH);
 		add(animationPanel, BorderLayout.CENTER);
 		add(statsPanel, BorderLayout.SOUTH);
 		
@@ -109,6 +110,7 @@ public class PocoFrame extends JFrame implements ActionListener {
 					timer.stop();
 					state = startState.clone();
 					animationPanel.repaint();
+					infoText.setText("--");
 					
 					Object sel = algSelection.getSelectedItem();
 					if (sel != null) {
@@ -141,6 +143,8 @@ public class PocoFrame extends JFrame implements ActionListener {
 			add(algSelection);
 			add(start);
 			add(infoText);
+			
+			algSelection.setSelectedIndex(0);
 		}
 
 	}
@@ -206,15 +210,16 @@ public class PocoFrame extends JFrame implements ActionListener {
 		}
 	}
 	
-	private class StatisticsPanel extends JScrollPane {
+	private class StatisticsPanel extends JPanel {
 
 		private static final long serialVersionUID = -2784642256448035063L;
 		private JTextArea text;
 		
 		public StatisticsPanel() {
 			text = new JTextArea();
-			text.setPreferredSize(new Dimension(100, 50));
-			add(text);
+			setLayout(new BorderLayout());
+			add(new JScrollPane(text), BorderLayout.CENTER);
+			setPreferredSize(new Dimension(200, 100));
 		}
 		
 		public void displaySolutionStats(Solution s) {
