@@ -1,36 +1,32 @@
 package main;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
 import javax.swing.JFrame;
 
-import simulation.Action;
 import simulation.Board;
-import simulation.BoardType;
+import simulation.BoardFactory;
 import ui.PocoFrame;
+import agent.*;
 
 public class Game {
 
 	public static void main(String[] args) {
 		// Create board
-		Board b = new Board(BoardType.EASY);
+		Board b = BoardFactory.easyBoard();
 		
-		// Create agent
-		
-		// Give board data to agent, and run agent's solution algorithm
-		ArrayList<Action> actions = new ArrayList<Action>();
-		actions.add(Action.UP);
-		actions.add(Action.LEFT);
-		actions.add(Action.DOWN);
-		actions.add(Action.LEFT);
-		actions.add(Action.UP);
-		Iterator<Action> solution = actions.iterator();
+		// Add any number of agent objects as parameters to runAll()
+		SolutionSet set = runAll(b, new DepthFirstAgent(), new TestAgent(30));
 		
 		// Give agent's solution output to ui
-		JFrame frame = new PocoFrame(b, solution);
+		JFrame frame = new PocoFrame(b, set);
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 	}
 	
+	private static SolutionSet runAll(Board startState, Agent... agents) {
+		SolutionSet set = new SolutionSet();
+		for (Agent a : agents) {
+			set.addSolution(a.algorithmName(), a.findSolution(startState.clone()));
+		}
+		return set;
+	}
 }

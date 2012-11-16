@@ -25,5 +25,14 @@ public class Square {
 	public void setContents(SquareContents gContents) {
 		contents = gContents;
 	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if (!(other instanceof Square))
+			return false;
+		
+		Square sq = (Square) other;
+		return sq.type == type && sq.contents == contents;
+	}
 
 }

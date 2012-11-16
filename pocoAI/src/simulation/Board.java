@@ -11,60 +11,39 @@ import java.util.List;
  * changed in the future.
  * 
  */
-public class Board {
+public class Board implements Cloneable {
 
 	private Square[][] board;
 	private int xPos;
 	private int yPos;
-	private Location goalLoaction;
-	private List<Location> boxLocations;
+	private Location goalLocation;
+	
+	//TODO: Be careful with this -- the list will need to be updated whenever a box is moved
+	private List<Location> boxLocations = new ArrayList<Location>();
 
-	public Board(BoardType boardType) {
-		// Not sure which type would be best
-		boxLocations = new ArrayList<Location>();
+	public Board(Square[][] boardData) {
+		board = boardData;
+		for (int y = 0; y < board.length; y++) {
+			for (int x = 0; x < board[y].length; x++) {
+				switch (getSquareContents(x, y)) {
+				case AGENT:
+					xPos = x;
+					yPos = y;
+					break;
+				case BOX:
+					boxLocations.add(new Location(x, y));
+					break;
+				default:
+					break;
+				}
 
-		switch (boardType) {
-		case EASY:
-			board = new Square[5][5];
-			for (int h = 0; h < getHeight(); h++) {
-				for (int w = 0; w < getWidth(); w++) {
-					// Set outside walls
-					if (isOutsideWall(h, w, getHeight(), getWidth())) {
-						board[h][w] = new Square(SquareType.WALL,
-								SquareContents.EMPTY);
-					}
-
-					// Set goal in top left
-					else if (h == 1 && w == 1) {
-						board[h][w] = new Square(SquareType.GOAL,
-								SquareContents.EMPTY);
-						goalLoaction = new Location(w, h);
-					}
-
-					// Set boxes
-					else if ((h == 2 && w == 2) || (h == 2 && w == 3)) {
-						board[h][w] = new Square(SquareType.EMPTY,
-								SquareContents.BOX);
-						boxLocations.add(new Location(w, h));
-					}
-
-					// The rest
-					else {
-						board[h][w] = new Square(SquareType.EMPTY,
-								SquareContents.EMPTY);
-					}
-
+				switch (getSquareType(x, y)) {
+				case GOAL:
+					goalLocation = new Location(x, y);
+				default:
+					break;
 				}
 			}
-			// Start position
-			xPos = 3;
-			yPos = 3;
-			board[yPos][xPos].setContents(SquareContents.AGENT);
-
-		case MEDIUM:
-			return;
-		case HARD:
-			return;
 		}
 	}
 
@@ -96,7 +75,7 @@ public class Board {
 		if (hasBox(tempX, tempY)) {
 			int moveToX = tempX + agentAction.getDX();
 			int moveToY = tempY + agentAction.getDY();
-			
+
 			if (hasBox(moveToX, moveToY) || isWall(moveToX, moveToY)) {
 				// Can't move
 				// Throw error?
@@ -119,6 +98,24 @@ public class Board {
 		}
 
 		board[yPos][xPos].setContents(SquareContents.AGENT);
+	}
+	
+	public boolean canMoveAgent(Action agentAction) {
+		int tempX = xPos + agentAction.getDX();
+		int tempY = yPos + agentAction.getDY();
+
+		if (hasBox(tempX, tempY)) {
+			int moveToX = tempX + agentAction.getDX();
+			int moveToY = tempY + agentAction.getDY();
+
+			if (hasBox(moveToX, moveToY) || isWall(moveToX, moveToY))
+				return false;
+
+		} else if (isWall(tempX, tempY)) {
+			return false;
+		}
+			
+		return true;
 	}
 
 	/**
@@ -169,13 +166,13 @@ public class Board {
 	 */
 	public Location getGoalLocation() {
 		// Deep copy just in case
-		return new Location(goalLoaction.getX(), goalLoaction.getY());
+		return new Location(goalLocation.getX(), goalLocation.getY());
 	}
 
 	/**
 	 * @return All of the box locations
 	 */
-	public List<Location> getBoxlLocations() {
+	public List<Location> getBoxLocations() {
 		// Deep copy just in case
 		List<Location> ret = new ArrayList<Location>();
 
@@ -209,7 +206,7 @@ public class Board {
 	 * @return true if the square has a box, false otherwise
 	 */
 	public boolean hasBox(int x, int y) {
-		return board[y][x].getContents() == SquareContents.BOX;
+		return !isOutOfBounds(x, y) && board[y][x].getContents() == SquareContents.BOX;
 	}
 
 	/**
@@ -222,13 +219,18 @@ public class Board {
 	 * @return true if the square is a wall, false otherwise
 	 */
 	public boolean isWall(int x, int y) {
-		return board[y][x].getType() == SquareType.WALL;
+		return isOutOfBounds(x, y) || board[y][x].getType() == SquareType.WALL;
+	}
+	
+	private boolean isOutOfBounds(int x, int y) {
+		return x < 0 || y < 0 || x >= getWidth() || y >= getWidth();
 	}
 
 	/**
 	 * @return the deep clone of the board
 	 */
-	public Square[][] getDeepClone() {
+	@Override
+	public Board clone() {
 		Square[][] clone = new Square[getWidth()][getHeight()];
 		for (int h = 0; h < getHeight(); h++) {
 			for (int w = 0; w < getWidth(); w++) {
@@ -236,6 +238,24 @@ public class Board {
 						board[h][w].getContents());
 			}
 		}
-		return clone;
+
+		Board b = new Board(clone);
+		return b;
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if (!(other instanceof Board))
+			return false;
+		
+		Board b = (Board) other;
+		for (int i = 0; i < board.length; i++) {
+			for (int j = 0; j < board[i].length; j++) {
+				if (!b.board[i][j].equals(board[i][j]))
+					return false;
+			}
+		}
+		
+		return true;
 	}
 }
