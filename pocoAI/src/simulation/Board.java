@@ -23,8 +23,8 @@ public class Board implements Cloneable {
 
 	public Board(Square[][] boardData) {
 		board = boardData;
-		for (int y = 0; y < board.length; y++) {
-			for (int x = 0; x < board[y].length; x++) {
+		for (int y = 0; y < getHeight(); y++) {
+			for (int x = 0; x < getWidth(); x++) {
 				switch (getSquareContents(x, y)) {
 				case AGENT:
 					xPos = x;
@@ -45,10 +45,6 @@ public class Board implements Cloneable {
 				}
 			}
 		}
-	}
-
-	private static boolean isOutsideWall(int h, int w, int height, int width) {
-		return h == 0 || w == 0 || h == height - 1 || w == width - 1;
 	}
 
 	/**
@@ -103,7 +99,7 @@ public class Board implements Cloneable {
 	public boolean canMoveAgent(Action agentAction) {
 		int tempX = xPos + agentAction.getDX();
 		int tempY = yPos + agentAction.getDY();
-
+		
 		if (hasBox(tempX, tempY)) {
 			int moveToX = tempX + agentAction.getDX();
 			int moveToY = tempY + agentAction.getDY();
@@ -222,8 +218,8 @@ public class Board implements Cloneable {
 		return isOutOfBounds(x, y) || board[y][x].getType() == SquareType.WALL;
 	}
 	
-	private boolean isOutOfBounds(int x, int y) {
-		return x < 0 || y < 0 || x >= getWidth() || y >= getWidth();
+	public boolean isOutOfBounds(int x, int y) {
+		return x < 0 || y < 0 || x >= getWidth() || y >= getHeight();
 	}
 
 	/**
@@ -231,7 +227,7 @@ public class Board implements Cloneable {
 	 */
 	@Override
 	public Board clone() {
-		Square[][] clone = new Square[getWidth()][getHeight()];
+		Square[][] clone = new Square[getHeight()][getWidth()];
 		for (int h = 0; h < getHeight(); h++) {
 			for (int w = 0; w < getWidth(); w++) {
 				clone[h][w] = new Square(board[h][w].getType(),
