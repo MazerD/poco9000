@@ -1,6 +1,7 @@
 package simulation;
 
-import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -17,9 +18,7 @@ public class Board implements Cloneable {
 	private int xPos;
 	private int yPos;
 	private Location goalLocation;
-	
-	//TODO: Be careful with this -- the list will need to be updated whenever a box is moved
-	private List<Location> boxLocations = new ArrayList<Location>();
+	private List<Location> boxLocations = new LinkedList<Location>();
 
 	public Board(Square[][] boardData) {
 		board = boardData;
@@ -63,43 +62,57 @@ public class Board implements Cloneable {
 	 *            The direction in which to move
 	 */
 	public void moveAgent(Action agentAction) {
-		board[yPos][xPos].setContents(SquareContents.EMPTY);
+		if (canMoveAgent(agentAction)) {
+			board[yPos][xPos].setContents(SquareContents.EMPTY);
 
-		int tempX = xPos + agentAction.getDX();
-		int tempY = yPos + agentAction.getDY();
+			int tempX = xPos + agentAction.getDX();
+			int tempY = yPos + agentAction.getDY();
 
-		if (hasBox(tempX, tempY)) {
-			int moveToX = tempX + agentAction.getDX();
-			int moveToY = tempY + agentAction.getDY();
+			if (hasBox(tempX, tempY)) {
+				int moveToX = tempX + agentAction.getDX();
+				int moveToY = tempY + agentAction.getDY();
 
-			if (hasBox(moveToX, moveToY) || isWall(moveToX, moveToY)) {
-				// Can't move
-				// Throw error?
-			} else if (board[moveToY][moveToX].getType() == SquareType.GOAL) {
 				board[tempY][tempX].setContents(SquareContents.EMPTY);
 				xPos = tempX;
 				yPos = tempY;
+
+				//int index = boxLocations.lastIndexOf(new Location(tempX, tempY));
+				
+				// Replace previous line with an iterator through the list
+				// On x, y position match, replace index with the match to get the last occurrence
+				
+				int index = -1;
+				Iterator<Location> iter = boxLocations.iterator();
+				Location tempL;
+				int i = 0;
+				while (iter.hasNext())
+				{
+					tempL = iter.next();
+					if ((tempL.getX() == tempX) && (tempL.getY() == tempY))
+						index = i;
+					i++;
+				}
+
+				if (board[moveToY][moveToX].getType() == SquareType.GOAL) {
+					boxLocations.remove(index);
+				} else {
+					boxLocations.set(index, new Location(moveToX, moveToY));
+					board[moveToY][moveToX].setContents(SquareContents.BOX);
+				}
+
 			} else {
-				board[moveToY][moveToX].setContents(SquareContents.BOX);
 				xPos = tempX;
 				yPos = tempY;
 			}
 
-		} else if (isWall(tempX, tempY)) {
-			// Can't move
-			// Throw error?
-		} else {
-			xPos = tempX;
-			yPos = tempY;
+			board[yPos][xPos].setContents(SquareContents.AGENT);
 		}
-
-		board[yPos][xPos].setContents(SquareContents.AGENT);
 	}
-	
+
 	public boolean canMoveAgent(Action agentAction) {
 		int tempX = xPos + agentAction.getDX();
 		int tempY = yPos + agentAction.getDY();
-		
+
 		if (hasBox(tempX, tempY)) {
 			int moveToX = tempX + agentAction.getDX();
 			int moveToY = tempY + agentAction.getDY();
@@ -110,7 +123,7 @@ public class Board implements Cloneable {
 		} else if (isWall(tempX, tempY)) {
 			return false;
 		}
-			
+
 		return true;
 	}
 
@@ -161,22 +174,14 @@ public class Board implements Cloneable {
 	 * @return The goal's location
 	 */
 	public Location getGoalLocation() {
-		// Deep copy just in case
-		return new Location(goalLocation.getX(), goalLocation.getY());
+		return goalLocation;
 	}
 
 	/**
 	 * @return All of the box locations
 	 */
 	public List<Location> getBoxLocations() {
-		// Deep copy just in case
-		List<Location> ret = new ArrayList<Location>();
-
-		for (Location loc : boxLocations) {
-			ret.add(new Location(loc.getX(), loc.getY()));
-		}
-
-		return ret;
+		return boxLocations;
 	}
 
 	/**
@@ -202,7 +207,8 @@ public class Board implements Cloneable {
 	 * @return true if the square has a box, false otherwise
 	 */
 	public boolean hasBox(int x, int y) {
-		return !isOutOfBounds(x, y) && board[y][x].getContents() == SquareContents.BOX;
+		return !isOutOfBounds(x, y)
+				&& board[y][x].getContents() == SquareContents.BOX;
 	}
 
 	/**
@@ -217,11 +223,11 @@ public class Board implements Cloneable {
 	public boolean isWall(int x, int y) {
 		return isOutOfBounds(x, y) || board[y][x].getType() == SquareType.WALL;
 	}
-	
+
 	public boolean isOutOfBounds(int x, int y) {
 		return x < 0 || y < 0 || x >= getWidth() || y >= getHeight();
 	}
-
+	
 	/**
 	 * @return the deep clone of the board
 	 */
@@ -238,12 +244,12 @@ public class Board implements Cloneable {
 		Board b = new Board(clone);
 		return b;
 	}
-	
+
 	@Override
 	public boolean equals(Object other) {
 		if (!(other instanceof Board))
 			return false;
-		
+
 		Board b = (Board) other;
 		for (int i = 0; i < board.length; i++) {
 			for (int j = 0; j < board[i].length; j++) {
@@ -251,7 +257,7 @@ public class Board implements Cloneable {
 					return false;
 			}
 		}
-		
+
 		return true;
 	}
 }
