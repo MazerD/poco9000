@@ -14,7 +14,8 @@ public class Game {
 		Board b = BoardFactory.easyBoard();
 		
 		// Add any number of agent objects as parameters to runAll()
-		SolutionSet set = runAll(b, new DepthFirstAgent(), new TestAgent(30));
+		//SolutionSet set = runAll(b, new DepthFirstAgent(), new TestAgent(30));
+		SolutionSet set = runAll(b, new DepthFirstAgent(), new HeuristicAgent(new BoxGoalHeuristic()), new TestAgent(30));
 		
 		// Give agent's solution output to ui
 		JFrame frame = new PocoFrame(b, set);

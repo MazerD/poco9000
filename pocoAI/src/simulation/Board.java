@@ -143,7 +143,7 @@ public class Board implements Cloneable {
 	 *            the x coordinate
 	 * @param y
 	 *            the y coordinate
-	 * @return The typpe of square at the given location
+	 * @return The type of square at the given location
 	 */
 	public SquareType getSquareType(int x, int y) {
 		return board[y][x].getType();
