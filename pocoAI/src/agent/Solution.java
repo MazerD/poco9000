@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
 import simulation.Action;
 
@@ -48,6 +49,10 @@ public class Solution {
 	
 	public void appendAction(Action a) {
 		actions.addLast(a);
+	}
+	
+	public void appendAllActions(List<Action> a) {
+		actions.addAll(a);
 	}
 	
 	public Action popLastAction() {
