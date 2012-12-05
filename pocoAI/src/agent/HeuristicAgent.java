@@ -1,7 +1,6 @@
 package agent;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -23,13 +22,11 @@ public class HeuristicAgent extends AbstractAgent {
 	
 	@Override
 	public String algorithmName() {
-		return heuristic.name();
+		return "A*: " + heuristic.name();
 	}
 
 	@Override
 	protected Solution doFindSolution(Board startState) {
-		
-		// TODO Stub, replace with actual solution.
 		s = new Solution();
 		s.addStatistic("Manhattan Distance", heuristic.value(startState));
 		visited.clear();
@@ -111,7 +108,6 @@ public class HeuristicAgent extends AbstractAgent {
 
 		@Override
 		public int compare(Move arg0, Move arg1) {
-			// TODO Auto-generated method stub
 			int x = heuristic.value(arg0.getBoard());
 			int y = heuristic.value(arg1.getBoard());
 			

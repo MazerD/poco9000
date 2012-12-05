@@ -33,7 +33,7 @@ public class BoxGoalHeuristic implements Heuristic {
 	@Override
 	public String name() {
 
-		return "A*: Agent - Goal Manhattan Distance";
+		return "Manhattan Distance";
 	}
 
 }
