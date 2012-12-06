@@ -12,7 +12,7 @@ public class Game {
 
 	public static void main(String[] args) {
 		// Create board
-		Board b = BoardFactory.easyBoard();
+		Board b = BoardFactory.smallBoard();
 		
 		// Add any number of agent objects as parameters to runAll()
 		SolutionSet set = runAll(b, new DepthFirstAgent(), new HeuristicAgent(
