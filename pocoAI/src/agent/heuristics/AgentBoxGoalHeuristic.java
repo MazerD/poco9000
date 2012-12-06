@@ -33,7 +33,7 @@ public class AgentBoxGoalHeuristic implements Heuristic {
 			if (agentDist < closestBox)
 				closestBox = agentDist;
 		}
-		val = (val * 5) + closestBox;
+		val += closestBox;
 		
 		return val;
 	}
