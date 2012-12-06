@@ -24,15 +24,16 @@ public class BreadthFirstAgent extends AbstractAgent {
 		fringe.add(new Node(startState, null, null));
 		while (!fringe.isEmpty()) {
 			Node cur = fringe.removeFirst();
-			if (cur.state.getBoxLocations().isEmpty()) {
-				return buildSolution(cur);
-			}
 			visited.add(cur.state);
 			
 			for (Action a : Action.values()) {
 				if (cur.state.canMoveAgent(a)) {
 					Board newState = cur.state.clone();
 					newState.moveAgent(a);
+					
+					if (newState.getBoxLocations().isEmpty())
+						return buildSolution(new Node(newState, a, cur));
+					
 					if (!visited.contains(newState))
 						fringe.addLast(new Node(newState, a, cur));
 				}
