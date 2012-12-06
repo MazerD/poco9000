@@ -2,20 +2,18 @@ package agent;
 
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 
-import agent.heuristics.Heuristic;
-
 import simulation.Action;
 import simulation.Board;
+import agent.heuristics.Heuristic;
 
 public class HeuristicAgent extends AbstractAgent {
 
 	private Heuristic heuristic;
 	private Collection<Board> visited = new LinkedList<Board>();
-	private Solution s;
+	PriorityQueue<Move> candidates = new PriorityQueue<Move>(4, new HeurComp());
 	
 	public HeuristicAgent(Heuristic h)
 	{
@@ -29,69 +27,88 @@ public class HeuristicAgent extends AbstractAgent {
 
 	@Override
 	protected Solution doFindSolution(Board startState) {
-		s = new Solution();
-		s.addStatistic("Manhattan Distance", heuristic.value(startState));
+		//s.addStatistic("Manhattan Distance", heuristic.value(startState));
 		visited.clear();
-		solve(startState);
+		candidates.clear();
+
+		//Initialize visited and candidates with startState
+		visited.add(startState);
+		for (Action a : Action.values()) {
+			if (startState.canMoveAgent(a)) {
+				Board moved = startState.clone();
+				moved.moveAgent(a);				
+				candidates.add(new Move(moved, a, 1, null));
+			}
+		}
 		
-		return s;
+		//The search...
+		Move m;
+		while (!candidates.isEmpty()) {
+			//Take the best candidate
+			m = candidates.remove();
+			
+			//If m is a solution state, create and return the solution
+			if (m.getBoard().getBoxLocations().isEmpty()) {
+				return makeSolution(m);
+			}
+
+			//Mark m as visited
+			visited.add(m.getBoard());
+
+			//Add all unvisited nodes adjacent to m to the candidate pool
+			for (Action a : Action.values()) {
+				if (m.getBoard().canMoveAgent(a)) {
+					
+					Board moved = m.getBoard().clone();
+					moved.moveAgent(a);
+					
+					if (!visited.contains(moved)) {
+						boolean hasOther = false;
+						
+						for (Move move : candidates) {
+							if (move.getBoard().equals(moved)) {
+								hasOther = true;
+								if (m.getCost() + 1 < move.cost) {
+									move.cost = m.getCost() + 1;
+									move.prev = m;
+								}
+							}
+						}
+
+						if (!hasOther) {
+							candidates.add(new Move(moved, a, m.getCost() + 1, m));
+						}
+					}
+				}
+			}
+		}
+
+		//No solution possible
+		return new Solution();
 	}
 	
-	private boolean solve(Board state)
-	{
-		if (state.getBoxLocations().size() == 0) {
-			return true;
+	private static Solution makeSolution(Move m) {
+		Solution s = new Solution();
+		while (m != null) {
+			s.prependAction(m.getAction());
+			m = m.getPrev();
 		}
-		
-		visited.add(state);
-		
-		PriorityQueue<Move> candidates = new PriorityQueue<Move>(4, new HeurComp());
-		
-		//System.out.println("Start cycle.");
-		
-		for (Action a : Action.values()) {
-			if (state.canMoveAgent(a)) {
-				Board moved = state.clone();
-				moved.moveAgent(a);
-				
-				//System.out.println("Added " + a + " at distance " + heuristic.value(moved));
-				
-				candidates.add(new Move(moved, a));
-			}
-		}
-		
-		Iterator<Move> iter = candidates.iterator();
-		Move m;
-
-		while (iter.hasNext())
-		{
-			m = iter.next();
-			//System.out.println(heuristic.value(m.getBoard()));
-			//System.out.println(m.getAction());
-		}
-		
-		iter = candidates.iterator();
-		while (iter.hasNext())
-		{
-			m = iter.next();
-			if (!visited.contains(m.getBoard()) && solve(m.getBoard())) {
-				s.prependAction(m.getAction());
-				return true;
-			}
-		}
-		
-		return false;
+		return s;
 	}
 	
 	private class Move
 	{
 		private Action a;
 		private Board b;
+		private int cost;
+		private Move prev;
 		
-		public Move(Board b, Action a)
+		public Move(Board b, Action a, int cost, Move prev)
 		{
 			this.b = b;
 			this.a = a;
+			this.cost = cost;
+			this.prev = prev;
 		}
 		
 		public Action getAction()
@@ -103,6 +120,14 @@ public class HeuristicAgent extends AbstractAgent {
 		{
 			return b;
 		}
+		
+		public int getCost() {
+			return cost;
+		}
+		
+		public Move getPrev() {
+			return prev;
+		}
 	}
 	
 	private class HeurComp implements Comparator<Move>
@@ -110,8 +135,8 @@ public class HeuristicAgent extends AbstractAgent {
 
 		@Override
 		public int compare(Move arg0, Move arg1) {
-			int x = heuristic.value(arg0.getBoard());
-			int y = heuristic.value(arg1.getBoard());
+			int x = heuristic.value(arg0.getBoard()) + arg0.getCost();
+			int y = heuristic.value(arg1.getBoard()) + arg1.getCost();
 			
 			if (x > y)
 				return 1;
