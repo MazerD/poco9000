@@ -5,11 +5,8 @@ import javax.swing.JFrame;
 import simulation.Board;
 import simulation.BoardFactory;
 import ui.PocoFrame;
-import agent.Agent;
-import agent.DepthFirstAgent;
-import agent.HeuristicAgent;
-import agent.SolutionSet;
-import agent.heuristics.PathFindingHeuristic;
+import agent.*;
+import agent.heuristics.*;
 
 public class Game {
 
@@ -18,9 +15,11 @@ public class Game {
 		Board b = BoardFactory.easyBoard();
 		
 		// Add any number of agent objects as parameters to runAll()
-		//SolutionSet set = runAll(b, new DepthFirstAgent(), new TestAgent(30));
-		SolutionSet set = runAll(b, new DepthFirstAgent(), new HeuristicAgent(new PathFindingHeuristic()));
-		
+		SolutionSet set = runAll(b, new DepthFirstAgent(), new HeuristicAgent(
+				new AgentBoxGoalHeuristic()), new HeuristicAgent(
+				new BoxGoalHeuristic()), new HeuristicAgent(
+				new PathFindingHeuristic()), new BreadthFirstAgent());
+
 		// Give agent's solution output to ui
 		JFrame frame = new PocoFrame(b, set);
 		frame.setLocationRelativeTo(null);
