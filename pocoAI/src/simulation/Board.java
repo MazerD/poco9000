@@ -14,6 +14,12 @@ import java.util.List;
  */
 public class Board implements Cloneable {
 
+	// This is for keeping track of how many boards are created, which is used
+	// for the nodes visited statistic
+	private static int COUNTER = 0;
+	public static int getCount() { return COUNTER; }
+	public static void resetCount() { COUNTER = 0; }
+	
 	private Square[][] board;
 	private int xPos;
 	private int yPos;
@@ -44,6 +50,9 @@ public class Board implements Cloneable {
 				}
 			}
 		}
+		
+		//This keeps track of how many boards are created
+		COUNTER++;
 	}
 
 	/**
