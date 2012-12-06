@@ -21,6 +21,11 @@ public class Location {
 		x = gX;
 		y = gY;
 	}
+	
+	public Location(Location prev, Action action) {
+		x = prev.x + action.getDX();
+		y = prev.y + action.getDY();
+	}
 
 	/**
 	 * @return the x coordinate
@@ -50,6 +55,17 @@ public class Location {
 	 */
 	public void setY(int gY) {
 		y = gY;
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+		return (other instanceof Location) && ((Location) other).x == x
+				&& ((Location) other).y == y;
+	}
+	
+	@Override
+	public int hashCode() {
+		return 7 * x + 13 * y;
 	}
 
 }

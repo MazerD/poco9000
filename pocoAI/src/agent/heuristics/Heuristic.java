@@ -1,4 +1,4 @@
-package agent;
+package agent.heuristics;
 
 import simulation.Board;
 

@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 
+import agent.heuristics.Heuristic;
+
 import simulation.Action;
 import simulation.Board;
 

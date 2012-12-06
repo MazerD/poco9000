@@ -1,7 +1,8 @@
-package agent;
+package agent.heuristics;
 
 import java.util.Iterator;
 import java.util.List;
+
 
 import simulation.Board;
 import simulation.Location;
@@ -19,12 +20,8 @@ public class BoxGoalHeuristic implements Heuristic {
 		while (iter.hasNext())
 		{
 			box = iter.next();
-			if (box.getX() > state.getGoalLocation().getX())
-				val += (box.getX() - state.getGoalLocation().getX());
-			else val += (state.getGoalLocation().getX() - box.getX());
-			if (box.getY() > state.getGoalLocation().getY())
-				val += (box.getY() - state.getGoalLocation().getY());
-			else val += (state.getGoalLocation().getY() - box.getY());
+			val += Math.abs(box.getX() - state.getGoalLocation().getX());
+			val += Math.abs(box.getY() - state.getGoalLocation().getY());
 		}
 		
 		return val;
@@ -32,8 +29,7 @@ public class BoxGoalHeuristic implements Heuristic {
 
 	@Override
 	public String name() {
-
-		return "Manhattan Distance";
+		return "Manhattan Distance (Box to Goal)";
 	}
 
 }
