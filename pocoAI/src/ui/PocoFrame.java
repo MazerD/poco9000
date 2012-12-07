@@ -22,6 +22,7 @@ import simulation.Action;
 import simulation.Board;
 import agent.Solution;
 import agent.SolutionSet;
+import agent.SolutionSet.SolutionCompletionListener;
 
 /**
  * Takes a Board indicating the start state, and a series of agent actions, and
@@ -53,7 +54,6 @@ public class PocoFrame extends JFrame implements ActionListener {
 
 	public PocoFrame(Board startState, SolutionSet solutions) {
 		super("Poco 9000");
-		
 		this.startState = startState;
 		state = startState.clone();
 		this.solutions = solutions;
@@ -64,6 +64,7 @@ public class PocoFrame extends JFrame implements ActionListener {
 		animationPanel = new MainPanel();
 		statsPanel = new StatisticsPanel();
 		ControlPanel cp = new ControlPanel();
+		solutions.addListener(cp);
 		add(cp, BorderLayout.NORTH);
 		add(animationPanel, BorderLayout.CENTER);
 		add(statsPanel, BorderLayout.SOUTH);
@@ -96,7 +97,7 @@ public class PocoFrame extends JFrame implements ActionListener {
 		repaint();
 	}
 
-	private class ControlPanel extends JPanel {
+	private class ControlPanel extends JPanel implements SolutionCompletionListener {
 
 		private static final long serialVersionUID = -7012821875692908254L;
 		private JComboBox algSelection;
@@ -114,7 +115,8 @@ public class PocoFrame extends JFrame implements ActionListener {
 					
 					Object sel = algSelection.getSelectedItem();
 					if (sel != null) {
-						statsPanel.displaySolutionStats(solutions.getSolution((String) sel));
+						Solution s = solutions.getSolution((String) sel);
+						statsPanel.displaySolutionStats(s);
 					}
 				}
 
@@ -129,10 +131,13 @@ public class PocoFrame extends JFrame implements ActionListener {
 					if (sel == null) {
 						infoText.setText("NULL");
 					} else {
-						actions = solutions.getSolution((String) sel).actions();
-						step = 0;
-						infoText.setText("0");
-						timer.start();
+						Solution s = solutions.getSolution((String) sel);
+						if (s != null) {
+							actions = s.actions();
+							step = 0;
+							infoText.setText("0");
+							timer.start();
+						}
 					}
 				}
 
@@ -145,6 +150,17 @@ public class PocoFrame extends JFrame implements ActionListener {
 			add(infoText);
 			
 			algSelection.setSelectedIndex(0);
+		}
+		
+		@Override
+		public void solutionComplete(String algorithmName) {
+			if (algSelection.getSelectedItem().equals(algorithmName)) {
+				Object sel = algSelection.getSelectedItem();
+				if (sel != null) {
+					Solution s = solutions.getSolution((String) sel);
+					statsPanel.displaySolutionStats(s);
+				}
+			}
 		}
 
 	}
@@ -223,10 +239,15 @@ public class PocoFrame extends JFrame implements ActionListener {
 		}
 		
 		public void displaySolutionStats(Solution s) {
-			text.setText("");
-			Collection<String> stats = s.statisticKeySet();
-			for (String stat : stats) {
-				text.append(stat + ": " + s.getStatistic(stat).toString() + "\n");
+			if (s != null) {
+				text.setText("");
+				Collection<String> stats = s.statisticKeySet();
+				for (String stat : stats) {
+					text.append(stat + ": " + s.getStatistic(stat).toString()
+							+ "\n");
+				}
+			} else {
+				text.setText("Algorithm running...");
 			}
 		}
 		
