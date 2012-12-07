@@ -35,4 +35,25 @@ public class Square {
 		return sq.type == type && sq.contents == contents;
 	}
 
+	@Override
+	public String toString() {
+		switch (type) {
+		case WALL:
+			return "X";
+		case GOAL:
+			return contents == SquareContents.AGENT ? "A" : "O";
+		case EMPTY:
+			switch (contents) {
+			case AGENT:
+				return "A";
+			case BOX:
+				return "B";
+			default:
+				return " ";
+			}
+		}
+		
+		return " ";
+	}
+	
 }

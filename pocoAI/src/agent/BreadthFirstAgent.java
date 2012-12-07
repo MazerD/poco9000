@@ -49,7 +49,7 @@ public class BreadthFirstAgent extends AbstractAgent {
 		return "Breadth First Graph Search";
 	}
 	
-	private Solution buildSolution(Node goalState) {
+	public static Solution buildSolution(Node goalState) {
 		Solution s = new Solution();
 		Node cur = goalState;
 		while (cur.prev != null) {
@@ -59,7 +59,7 @@ public class BreadthFirstAgent extends AbstractAgent {
 		return s;
 	}
 	
-	private class Node {
+	public static class Node {
 		public final Board state;
 		public final Action action;
 		public final Node prev;

@@ -26,7 +26,7 @@ public class BoardFactory {
 		return new Board(board);
 	}
 
-	public static Board smallBoard() {
+	public static Board easyBoard() {
 		return customBoard(5, 5, new Location(3, 3), new Location(0, 0),
 				new Location[] { l(2, 3), l(3, 2) }, new Location[] { l(0, 2),
 						l(1, 2), l(3, 1), l(4, 4) });
@@ -34,16 +34,20 @@ public class BoardFactory {
 
 	public static Board mediumBoard() {
 		return customBoard(10, 8, new Location(4, 4), new Location(0, 5),
-				new Location[] { l(1, 1),  l(4, 6) },
+				new Location[] { l(1, 1), l(4, 1), l(6, 1), l(8, 1), l(6, 2),
+						l(8, 2), l(7, 3), l(3, 5), l(4, 6), l(7, 6) },
 				new Location[] { l(0, 2), l(1, 2), l(2, 2), l(4, 2), l(5, 2),
 						l(2, 3), l(4, 3), l(9, 3), l(6, 4), l(7, 4), l(2, 5),
 						l(4, 5), l(5, 5), l(6, 5), l(7, 5), l(2, 6), l(2, 7),
 						l(8, 7), l(9, 7) });
 	}
 
-	public static Board largeBoard() {
+	public static Board hardBoard() {
 		return customBoard(15, 13, new Location(0, 5), new Location(14, 10),
-				new Location[] { l(7, 1), l(9, 11) },
+				new Location[] { l(7, 1), l(9, 1), l(5, 2), l(6, 2), l(9, 2),
+						l(6, 3), l(8, 3), l(11, 3), l(5, 4), l(7, 4), l(8, 4),
+						l(3, 5), l(1, 6), l(7, 9), l(8, 9), l(5, 10), l(8, 10),
+						l(10, 10), l(6, 11), l(9, 11) },
 				new Location[] { l(0, 0), l(1, 0), l(2, 0), l(3, 0), l(4, 0),
 						l(5, 0), l(6, 0), l(7, 0), l(8, 0), l(12, 0), l(13, 0),
 						l(14, 0), l(0, 1), l(1, 1), l(2, 1), l(3, 1), l(12, 1),

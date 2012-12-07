@@ -67,9 +67,5 @@ public class Location {
 	public int hashCode() {
 		return 7 * x + 13 * y;
 	}
-	
-	public Location clone() {
-		return new Location(x, y);
-	}
 
 }

@@ -203,7 +203,11 @@ public class Board implements Cloneable {
 	 * @return true if the square is empty, false otherwise
 	 */
 	public boolean isEmpty(int x, int y) {
-		return board[y][x].getContents() == SquareContents.EMPTY;
+		return !isOutOfBounds(x, y) && board[y][x].getContents() == SquareContents.EMPTY;
+	}
+	
+	public boolean isEmpty(Location l) {
+		return isEmpty(l.getX(), l.getY());
 	}
 
 	/**
@@ -269,4 +273,29 @@ public class Board implements Cloneable {
 
 		return true;
 	}
+	
+	@Override
+	public String toString() {
+		String s = "";
+		
+		for (int i = 0; i < this.getWidth() + 2; i++) {
+			s += "X";
+		}
+		s += "\n";
+		
+		for (int h = 0; h < board.length; h++) {
+			s += "X";
+			for (int w = 0; w < board[h].length; w++) {
+				s += board[h][w].toString();
+			}
+			s += "X\n";
+		}
+		
+		for (int i = 0; i < this.getWidth() + 2; i++) {
+			s += "X";
+		}
+		
+		return s;
+	}
+	
 }

@@ -12,13 +12,15 @@ public class Game {
 
 	public static void main(String[] args) {
 		// Create board
-		Board b = BoardFactory.smallBoard();
+		Board b = BoardFactory.easyBoard();
 		
 		// Add any number of agent objects as parameters to runAll()
-		SolutionSet set = runAll(b, new DepthFirstAgent(), new HeuristicAgent(
+		SolutionSet set = runAll(b, new HeuristicAgent(
 				new AgentBoxGoalHeuristic()), new HeuristicAgent(
 				new BoxGoalHeuristic()), new HeuristicAgent(
-				new PathFindingHeuristic()), new BreadthFirstAgent());
+				new PathFindingHeuristic()));
+		
+
 
 		// Give agent's solution output to ui
 		JFrame frame = new PocoFrame(b, set);
@@ -26,7 +28,7 @@ public class Game {
 		frame.setVisible(true);
 	}
 	
-	private static SolutionSet runAll(Board startState, Agent... agents) {
+	public static SolutionSet runAll(Board startState, Agent... agents) {
 		SolutionSet set = new SolutionSet();
 		for (Agent a : agents) {
 			set.addSolution(a.algorithmName(), a.findSolution(startState.clone()));
