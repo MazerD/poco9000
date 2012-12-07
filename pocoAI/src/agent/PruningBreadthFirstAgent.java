@@ -52,7 +52,7 @@ public class PruningBreadthFirstAgent extends AbstractAgent {
 	 * @param justTaken
 	 * @return
 	 */
-	private boolean isSolvable(Board state, Action justTaken) {
+	public static boolean isSolvable(Board state, Action justTaken) {
 		Location agent = state.getAgentLocation();
 		Location box = new Location(agent.getX() + justTaken.getDX(),
 				agent.getY() + justTaken.getDY());
@@ -67,7 +67,7 @@ public class PruningBreadthFirstAgent extends AbstractAgent {
 		}
 	}
 	
-	private boolean isMovable(Board state, Location l, Collection<Location> visited) {
+	private static boolean isMovable(Board state, Location l, Collection<Location> visited) {
 		// If two squares on either side of the box are both empty, it is movable
 		visited.add(l);
 		Location left = new Location(l, Action.LEFT);
@@ -81,7 +81,7 @@ public class PruningBreadthFirstAgent extends AbstractAgent {
 				canBeEmpty(state, down, visited));
 	}
 	
-	private boolean canBeEmpty(Board state, Location l, Collection<Location> visited) {
+	private static boolean canBeEmpty(Board state, Location l, Collection<Location> visited) {
 		return state.isEmpty(l) || state.getAgentLocation().equals(l)
 				|| (state.hasBox(l.getX(), l.getY()) && !visited.contains(l) && isMovable(
 						state, l, new LinkedList<Location>(visited)));
