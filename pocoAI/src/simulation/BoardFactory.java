@@ -26,7 +26,7 @@ public class BoardFactory {
 		return new Board(board);
 	}
 
-	public static Board smallBoard() {
+	public static Board easyBoard() {
 		return customBoard(5, 5, new Location(3, 3), new Location(0, 0),
 				new Location[] { l(2, 3), l(3, 2) }, new Location[] { l(0, 2),
 						l(1, 2), l(3, 1), l(4, 4) });
