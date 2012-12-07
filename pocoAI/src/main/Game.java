@@ -17,8 +17,7 @@ public class Game {
 		// Add any number of agent objects as parameters to runAll()
 		SolutionSet set = runAll(b, new HeuristicAgent(
 				new AgentBoxGoalHeuristic()), new HeuristicAgent(
-				new BoxGoalHeuristic()), new HeuristicAgent(
-				new PathFindingHeuristic()));
+				new BoxGoalHeuristic()));
 		
 
 
@@ -31,7 +30,7 @@ public class Game {
 	public static SolutionSet runAll(Board startState, Agent... agents) {
 		SolutionSet set = new SolutionSet();
 		for (Agent a : agents) {
-			set.addSolution(a.algorithmName(), a.findSolution(startState.clone()));
+			set.runAndAddSolution(startState.clone(), a);
 		}
 		return set;
 	}

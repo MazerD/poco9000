@@ -7,8 +7,8 @@ import simulation.Location;
 
 public class FloodFillHeuristic implements Heuristic {
 	
-	Board state;
-	int[][] floodedBoard;
+	private Board state;
+	private static int[][] floodedBoard;
 	
 	private final int NOT_VISITED = -1;
 	private final int CANNOT_MOVE = Integer.MAX_VALUE;
@@ -32,7 +32,7 @@ public class FloodFillHeuristic implements Heuristic {
 	
 	private HashMap<Location, Integer> getPaths(Board state) {
 		HashMap<Location, Integer> map = new HashMap<Location, Integer>();
-		floodFill(state.getGoalLocation());
+		if (floodedBoard == null) floodFill(state.getGoalLocation());
 		for (Location box : state.getBoxLocations()) {
 			map.put(box, floodedBoard[box.getY()][box.getX()]);
 		}
